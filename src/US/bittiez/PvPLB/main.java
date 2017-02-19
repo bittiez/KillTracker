@@ -10,6 +10,7 @@ import org.bukkit.event.Listener;
 import org.bukkit.event.entity.EntityDamageByEntityEvent;
 import org.bukkit.event.entity.EntityDeathEvent;
 import org.bukkit.event.entity.PlayerDeathEvent;
+import org.bukkit.event.world.WorldSaveEvent;
 import org.bukkit.plugin.PluginManager;
 import org.bukkit.plugin.java.JavaPlugin;
 
@@ -39,6 +40,11 @@ public class main extends JavaPlugin implements Listener{
         log = getLogger();
         PluginManager pm = getServer().getPluginManager();
         pm.registerEvents(this, this);
+    }
+
+    @EventHandler
+    public void onWorldSave(WorldSaveEvent e){
+        saveStats();
     }
 
     @EventHandler
@@ -72,7 +78,7 @@ public class main extends JavaPlugin implements Listener{
                         + "&6 total monsters."
                 ));
             }
-            saveStats();
+            //saveStats();
         }
 
     }
@@ -84,7 +90,7 @@ public class main extends JavaPlugin implements Listener{
         if(killer != null){
             rewardKiller(killer);
             punishVictim(victim);
-            saveStats();
+            //saveStats();
         }
     }
 
