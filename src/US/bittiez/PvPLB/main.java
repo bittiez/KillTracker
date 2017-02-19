@@ -3,11 +3,13 @@ package US.bittiez.PvPLB;
 import org.bukkit.ChatColor;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.configuration.file.YamlConfiguration;
+import org.bukkit.entity.Entity;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
+import org.bukkit.event.entity.EntityDamageByEntityEvent;
+import org.bukkit.event.entity.EntityDeathEvent;
 import org.bukkit.event.entity.PlayerDeathEvent;
-import org.bukkit.event.world.WorldSaveEvent;
 import org.bukkit.plugin.PluginManager;
 import org.bukkit.plugin.java.JavaPlugin;
 
@@ -37,6 +39,42 @@ public class main extends JavaPlugin implements Listener{
         log = getLogger();
         PluginManager pm = getServer().getPluginManager();
         pm.registerEvents(this, this);
+    }
+
+    @EventHandler
+    public void onEntityDeath(EntityDeathEvent e){
+        if(e.getEntity().getLastDamageCause() instanceof EntityDamageByEntityEvent) {
+            EntityDamageByEntityEvent nEvent = (EntityDamageByEntityEvent) e.getEntity().getLastDamageCause();
+            Entity ekiller = nEvent.getDamager();
+            if (ekiller instanceof Player) {
+                Player killer = (Player) ekiller;
+                if (stats.contains(killer.getUniqueId().toString() + ".mkills")) {
+                    int kills = stats.getInt(killer.getUniqueId().toString() + ".mkills");
+                    stats.set(killer.getUniqueId().toString() + ".mkills", kills + 1);
+                } else {
+                    stats.set(killer.getUniqueId().toString() + ".mkills", 1);
+                    stats.set(killer.getUniqueId().toString() + ".name", killer.getDisplayName());
+                }
+
+                if (stats.contains(killer.getUniqueId().toString() + "." + e.getEntity().getName() + ".mkills")) {
+                    int kills = stats.getInt(killer.getUniqueId().toString() + "." + e.getEntity().getName() + ".mkills");
+                    stats.set(killer.getUniqueId().toString() + "." + e.getEntity().getName() + ".mkills", kills + 1);
+                } else {
+                    stats.set(killer.getUniqueId().toString() + "." + e.getEntity().getName() + ".mkills", 1);
+                    stats.set(killer.getUniqueId().toString() + ".name", killer.getDisplayName());
+                }
+
+                killer.sendMessage(ChatColor.translateAlternateColorCodes('&', "&6You have killed&6 &5" +
+                        stats.getInt(killer.getUniqueId() + "." + e.getEntity().getName() + ".mkills")
+                        + " &5" + e.getEntity().getName()
+                        + "s&6 and &5"
+                        + stats.getInt(killer.getUniqueId() + ".mkills")
+                        + "&6 total monsters."
+                ));
+            }
+            saveStats();
+        }
+
     }
 
     @EventHandler
