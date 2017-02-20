@@ -1,0 +1,8 @@
+<component name="ArtifactManager">
+  <artifact type="jar" name="KillTracker:Jar">
+    <output-path>$PROJECT_DIR$/out/artifacts/KillTracker_Jar</output-path>
+    <root id="archive" name="KillTracker.jar">
+      <element id="module-output" name="PvPLB" />
+    </root>
+  </artifact>
+</component>

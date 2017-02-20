@@ -1,8 +1,0 @@
-<component name="ArtifactManager">
-  <artifact type="jar" name="PvPLB:jar">
-    <output-path>$PROJECT_DIR$/out/artifacts/PvPLB_jar</output-path>
-    <root id="archive" name="PvPLB.jar">
-      <element id="module-output" name="PvPLB" />
-    </root>
-  </artifact>
-</component>
