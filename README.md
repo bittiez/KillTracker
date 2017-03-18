@@ -1,6 +1,6 @@
 #KillTracker
 
-Spigot 1.11.2 plugin to keep track of various kill stats
+Spigot 1.11 plugin to keep track of various kill stats
 
 
 #Description
