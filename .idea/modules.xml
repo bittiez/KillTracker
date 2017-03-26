@@ -2,7 +2,7 @@
 <project version="4">
   <component name="ProjectModuleManager">
     <modules>
-      <module fileurl="file://$PROJECT_DIR$/PvPLB.iml" filepath="$PROJECT_DIR$/PvPLB.iml" />
+      <module fileurl="file://$PROJECT_DIR$/KillTracker.iml" filepath="$PROJECT_DIR$/KillTracker.iml" />
     </modules>
   </component>
 </project>

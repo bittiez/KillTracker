@@ -1,16 +1,12 @@
-package US.bittiez.PvPLB;
+package US.bittiez.KillTracker;
 
 import org.bukkit.ChatColor;
-import org.bukkit.Location;
-import org.bukkit.Material;
-import org.bukkit.block.Block;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
-import org.bukkit.event.block.BlockBreakEvent;
 import org.bukkit.event.entity.EntityDamageByEntityEvent;
 import org.bukkit.event.entity.EntityDeathEvent;
 import org.bukkit.event.entity.PlayerDeathEvent;
@@ -22,21 +18,10 @@ import java.io.File;
 import java.io.IOException;
 import java.util.logging.Logger;
 
-/**
- * Created by tadtaylor on 5/22/16.
- */
 public class main extends JavaPlugin implements Listener{
     private static Logger log;
     private FileConfiguration stats;
     private String statFile = "stats.yml";
-
-    /*
-    stats:
-    UUID
-      - name (Always set)
-      - kills  ?
-      - deaths ?
-     */
 
     @Override
     public void onEnable() {
@@ -56,7 +41,7 @@ public class main extends JavaPlugin implements Listener{
         if(e.getEntity().getLastDamageCause() instanceof EntityDamageByEntityEvent) {
             EntityDamageByEntityEvent nEvent = (EntityDamageByEntityEvent) e.getEntity().getLastDamageCause();
             Entity ekiller = nEvent.getDamager();
-            if (ekiller instanceof Player) {
+            if (ekiller instanceof Player && !(e.getEntity() instanceof Player)) {
                 Player killer = (Player) ekiller;
                 if (stats.contains(killer.getUniqueId().toString() + ".mkills")) {
                     int kills = stats.getInt(killer.getUniqueId().toString() + ".mkills");
@@ -79,7 +64,7 @@ public class main extends JavaPlugin implements Listener{
                         + " &5" + e.getEntity().getName()
                         + "s&6 and &5"
                         + stats.getInt(killer.getUniqueId() + ".mkills")
-                        + "&6 total monsters."
+                        + "&6 total mobs."
                 ));
             }
             //saveStats();
