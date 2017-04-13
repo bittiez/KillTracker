@@ -1,5 +1,8 @@
 package US.bittiez.KillTracker;
 
+import US.bittiez.KillTracker.Updater.UpdateChecker;
+import US.bittiez.KillTracker.Updater.UpdateStatus;
+import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.configuration.file.YamlConfiguration;
@@ -29,6 +32,15 @@ public class main extends JavaPlugin implements Listener{
         log = getLogger();
         PluginManager pm = getServer().getPluginManager();
         pm.registerEvents(this, this);
+
+        UpdateStatus updater = new UpdateChecker("https://github.com/bittiez/PvPLB/raw/master/src/plugin.yml", getDescription().getVersion()).getStatus();
+        if(updater.HasUpdate)
+            Bukkit.getScheduler().scheduleSyncDelayedTask(this, new Runnable() {
+                @Override
+                public void run() {
+                    log.info("There is a new version of KillTracker available, please check https://github.com/bittiez/PvPLB/releases or https://www.spigotmc.org/resources/killtracker.36640/");
+                }
+            }, (20*60)*5);
     }
 
     @EventHandler
