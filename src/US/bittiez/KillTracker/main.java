@@ -105,10 +105,11 @@ public class main extends JavaPlugin implements Listener{
             stats.set(killer.getUniqueId().toString() + ".kills", 1);
             stats.set(killer.getUniqueId().toString() + ".name", killer.getDisplayName());
         }
-        killer.sendMessage(ChatColor.translateAlternateColorCodes('&', "&6Your new &5Kill&6:Death is &5" +
-                stats.getInt(killer.getUniqueId() + ".kills")
-                + "&6:" +
-                stats.getInt(killer.getUniqueId() + ".deaths")));
+        String msg = config.config.getString("player_kill");
+        msg = msg.replace("[KILLS]", stats.getInt(killer.getUniqueId() + ".kills") + "")
+                .replace("[DEATHS]", stats.getInt(killer.getUniqueId() + ".deaths") + "");
+        msg = ChatColor.translateAlternateColorCodes('&', msg);
+        killer.sendMessage(msg);
     }
 
     private void punishVictim(Player victim){
@@ -119,10 +120,11 @@ public class main extends JavaPlugin implements Listener{
             stats.set(victim.getUniqueId().toString() + ".deaths", 1);
             stats.set(victim.getUniqueId().toString() + ".name", victim.getDisplayName());
         }
-        victim.sendMessage(ChatColor.translateAlternateColorCodes('&',"&6Your new Kill:&5Death &6is " +
-                stats.getInt(victim.getUniqueId() + ".kills")
-                + ":&5" +
-                stats.getInt(victim.getUniqueId() + ".deaths")));
+        String msg = config.config.getString("player_death");
+        msg = msg.replace("[KILLS]", stats.getInt(victim.getUniqueId() + ".kills") + "")
+                .replace("[DEATHS]", stats.getInt(victim.getUniqueId() + ".deaths") + "");
+        msg = ChatColor.translateAlternateColorCodes('&', msg);
+        victim.sendMessage(msg);
     }
 
     private void saveStats(){
