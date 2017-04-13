@@ -1,0 +1,3 @@
+mob_kill: "&6You have killed &5[THIS_MOB_AMT] [THIS_MOB](s) &6and &5 [TOTAL_MOBS] total mobs!"
+player_kill: "&6Your new &5Kill&6:&5Death &6ratio is &5[KILLS]&6:&5[DEATHS]"
+player_death: "&6Your new &5Kill&6:&5Death &6ratio is &5[KILLS]&6:&5[DEATHS]"

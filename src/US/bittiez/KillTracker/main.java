@@ -1,5 +1,9 @@
 package US.bittiez.KillTracker;
 
+import US.bittiez.KillTracker.Config.Configurator;
+import US.bittiez.KillTracker.Updater.UpdateChecker;
+import US.bittiez.KillTracker.Updater.UpdateStatus;
+import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.configuration.file.YamlConfiguration;
@@ -22,13 +26,25 @@ public class main extends JavaPlugin implements Listener{
     private static Logger log;
     private FileConfiguration stats;
     private String statFile = "stats.yml";
+    private Configurator config = new Configurator();
 
     @Override
     public void onEnable() {
         loadStats();
         log = getLogger();
+        config.setConfig(this);
+        config.saveDefaultConfig(this);
         PluginManager pm = getServer().getPluginManager();
         pm.registerEvents(this, this);
+
+        UpdateStatus updater = new UpdateChecker("https://github.com/bittiez/PvPLB/raw/master/src/plugin.yml", getDescription().getVersion()).getStatus();
+        if(updater.HasUpdate)
+            Bukkit.getScheduler().scheduleSyncDelayedTask(this, new Runnable() {
+                @Override
+                public void run() {
+                    log.info("There is a new version of KillTracker available, please check https://github.com/bittiez/PvPLB/releases or https://www.spigotmc.org/resources/killtracker.36640/");
+                }
+            }, (20*60)*5);
     }
 
     @EventHandler
@@ -59,15 +75,13 @@ public class main extends JavaPlugin implements Listener{
                     stats.set(killer.getUniqueId().toString() + ".name", killer.getDisplayName());
                 }
 
-                killer.sendMessage(ChatColor.translateAlternateColorCodes('&', "&6You have killed&6 &5" +
-                        stats.getInt(killer.getUniqueId() + "." + e.getEntity().getName() + ".mkills")
-                        + " &5" + e.getEntity().getName()
-                        + "s&6 and &5"
-                        + stats.getInt(killer.getUniqueId() + ".mkills")
-                        + "&6 total mobs."
-                ));
+                String msg = config.config.getString("mob_kill");
+                msg = msg.replace("[THIS_MOB_AMT]", stats.getInt(killer.getUniqueId() + "." + e.getEntity().getName() + ".mkills") + "")
+                        .replace("[THIS_MOB]", e.getEntity().getName())
+                        .replace("[TOTAL_MOBS]", stats.getInt(killer.getUniqueId() + ".mkills") + "");
+                msg = ChatColor.translateAlternateColorCodes('&', msg);
+                killer.sendMessage(msg);
             }
-            //saveStats();
         }
 
     }
@@ -91,10 +105,11 @@ public class main extends JavaPlugin implements Listener{
             stats.set(killer.getUniqueId().toString() + ".kills", 1);
             stats.set(killer.getUniqueId().toString() + ".name", killer.getDisplayName());
         }
-        killer.sendMessage(ChatColor.translateAlternateColorCodes('&', "&6Your new &5Kill&6:Death is &5" +
-                stats.getInt(killer.getUniqueId() + ".kills")
-                + "&6:" +
-                stats.getInt(killer.getUniqueId() + ".deaths")));
+        String msg = config.config.getString("player_kill");
+        msg = msg.replace("[KILLS]", stats.getInt(killer.getUniqueId() + ".kills") + "")
+                .replace("[DEATHS]", stats.getInt(killer.getUniqueId() + ".deaths") + "");
+        msg = ChatColor.translateAlternateColorCodes('&', msg);
+        killer.sendMessage(msg);
     }
 
     private void punishVictim(Player victim){
@@ -105,10 +120,11 @@ public class main extends JavaPlugin implements Listener{
             stats.set(victim.getUniqueId().toString() + ".deaths", 1);
             stats.set(victim.getUniqueId().toString() + ".name", victim.getDisplayName());
         }
-        victim.sendMessage(ChatColor.translateAlternateColorCodes('&',"&6Your new Kill:&5Death &6is " +
-                stats.getInt(victim.getUniqueId() + ".kills")
-                + ":&5" +
-                stats.getInt(victim.getUniqueId() + ".deaths")));
+        String msg = config.config.getString("player_death");
+        msg = msg.replace("[KILLS]", stats.getInt(victim.getUniqueId() + ".kills") + "")
+                .replace("[DEATHS]", stats.getInt(victim.getUniqueId() + ".deaths") + "");
+        msg = ChatColor.translateAlternateColorCodes('&', msg);
+        victim.sendMessage(msg);
     }
 
     private void saveStats(){
