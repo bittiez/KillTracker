@@ -1,5 +1,6 @@
 package US.bittiez.KillTracker;
 
+import US.bittiez.KillTracker.Config.Configurator;
 import US.bittiez.KillTracker.Updater.UpdateChecker;
 import US.bittiez.KillTracker.Updater.UpdateStatus;
 import org.bukkit.Bukkit;
@@ -25,11 +26,14 @@ public class main extends JavaPlugin implements Listener{
     private static Logger log;
     private FileConfiguration stats;
     private String statFile = "stats.yml";
+    private Configurator config = new Configurator();
 
     @Override
     public void onEnable() {
         loadStats();
         log = getLogger();
+        config.setConfig(this);
+        config.saveDefaultConfig(this);
         PluginManager pm = getServer().getPluginManager();
         pm.registerEvents(this, this);
 
@@ -71,15 +75,13 @@ public class main extends JavaPlugin implements Listener{
                     stats.set(killer.getUniqueId().toString() + ".name", killer.getDisplayName());
                 }
 
-                killer.sendMessage(ChatColor.translateAlternateColorCodes('&', "&6You have killed&6 &5" +
-                        stats.getInt(killer.getUniqueId() + "." + e.getEntity().getName() + ".mkills")
-                        + " &5" + e.getEntity().getName()
-                        + "s&6 and &5"
-                        + stats.getInt(killer.getUniqueId() + ".mkills")
-                        + "&6 total mobs."
-                ));
+                String msg = config.config.getString("mob_kill");
+                msg = msg.replace("[THIS_MOB_AMT]", stats.getInt(killer.getUniqueId() + "." + e.getEntity().getName() + ".mkills") + "")
+                        .replace("[THIS_MOB]", e.getEntity().getName())
+                        .replace("[TOTAL_MOBS]", stats.getInt(killer.getUniqueId() + ".mkills") + "");
+                msg = ChatColor.translateAlternateColorCodes('&', msg);
+                killer.sendMessage(msg);
             }
-            //saveStats();
         }
 
     }
