@@ -29,4 +29,4 @@ None, may add them upon request.
 
 # Configuration
 
-Currently no configuration options, may add message templates later.
+[View default config here](../../blob/master/src/config.yml)
