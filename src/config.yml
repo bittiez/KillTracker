@@ -1,3 +1,7 @@
-mob_kill: "&6You have killed &5[THIS_MOB_AMT] [THIS_MOB](s) &6and &5 [TOTAL_MOBS] total mobs!"
+mob_kill: "&6You have killed &5[THIS_MOB_AMT] [THIS_MOB](s) &6and &5[TOTAL_MOBS] &6total mobs!"
 player_kill: "&6Your new &5Kill&6:&5Death &6ratio is &5[KILLS]&6:&5[DEATHS]"
 player_death: "&6Your new &5Kill&6:&5Death &6ratio is &5[KILLS]&6:&5[DEATHS]"
+total_monster_kills: "&6You have killed &5[TOTAL_MOBS] &6total mobs!"
+total_mob_kills: "&6You have killed &5[THIS_MOB_AMT] [THIS_MOB](s)"
+player_kill_total: "&6You have killed &5[KILLS] &6players."
+player_death_total: "&6You have died &5[DEATHS] &6 times from other players."

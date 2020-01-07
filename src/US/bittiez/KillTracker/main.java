@@ -49,9 +49,26 @@ public class main extends JavaPlugin implements Listener{
                 if(stats.contains(playerUUID)) {
                     stats.getConfigurationSection(playerUUID).getKeys(false).forEach(key -> {
                         if(key.equals(MONSTER_KILLS)) {
-                            player.sendMessage("Total monster kills: " + stats.getInt(COMBINE_PATH(playerUUID, MONSTER_KILLS)));
-                        } else if(!key.equals("name")) {
-                            player.sendMessage(key + " kills: " + stats.getInt(COMBINE_PATH(playerUUID, key, MONSTER_KILLS)));
+                            String tmkMessage = config.config.getString("total_monster_kills")
+                                .replace("[TOTAL_MOBS]", String.valueOf(stats.getInt(COMBINE_PATH(playerUUID, MONSTER_KILLS))));
+                            tmkMessage = ChatColor.translateAlternateColorCodes('&', tmkMessage);
+                            player.sendMessage(tmkMessage);
+                        } else if(key.equals(PLAYER_KILLS)){
+                            String pkMessage = config.config.getString("player_kill_total")
+                                    .replace("[KILLS]", String.valueOf(stats.getInt(COMBINE_PATH(playerUUID, PLAYER_KILLS))));
+                            pkMessage = ChatColor.translateAlternateColorCodes('&', pkMessage);
+                            player.sendMessage(pkMessage);
+                        } else if(key.equals(PLAYER_DEATHS)) {
+                            String pdMessage = config.config.getString("player_death_total")
+                                    .replace("[DEATHS]", String.valueOf(stats.getInt(COMBINE_PATH(playerUUID, PLAYER_DEATHS))));
+                            pdMessage = ChatColor.translateAlternateColorCodes('&', pdMessage);
+                            player.sendMessage(pdMessage);
+                        } else if(!key.equals(PLAYER_NAME)) {
+                            String tmkMessage = config.config.getString("total_mob_kills")
+                                .replace("[THIS_MOB_AMT]", String.valueOf(stats.getInt(COMBINE_PATH(playerUUID, key, MONSTER_KILLS))))
+                                .replace("[THIS_MOB]", key);
+                            tmkMessage = ChatColor.translateAlternateColorCodes('&', tmkMessage);
+                            player.sendMessage(tmkMessage);
                         }
                     });
                 }
