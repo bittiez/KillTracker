@@ -8,5 +8,6 @@
     <orderEntry type="inheritedJdk" />
     <orderEntry type="sourceFolder" forTests="false" />
     <orderEntry type="library" name="patched_1.11.2" level="project" />
+    <orderEntry type="library" name="spigot-1.15.1" level="project" />
   </component>
 </module>
