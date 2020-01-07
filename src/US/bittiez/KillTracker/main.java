@@ -2,6 +2,8 @@ package US.bittiez.KillTracker;
 
 import US.bittiez.KillTracker.Config.Configurator;
 import org.bukkit.ChatColor;
+import org.bukkit.command.Command;
+import org.bukkit.command.CommandSender;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.entity.Entity;
@@ -33,6 +35,30 @@ public class main extends JavaPlugin implements Listener{
         config.saveDefaultConfig(this);
         PluginManager pm = getServer().getPluginManager();
         pm.registerEvents(this, this);
+    }
+
+    @Override
+    public boolean onCommand(CommandSender sender, Command command, String label, String[] args) {
+        if(sender instanceof Player)
+        {
+            Player player = (Player) sender;
+            String playerUUID = player.getUniqueId().toString();
+            if(args[0].equalsIgnoreCase("stats")){
+                if(stats.contains(playerUUID)) {
+                    stats.getConfigurationSection(playerUUID).getKeys(false).forEach(key -> {
+                        if(key.equals("mkills")) {
+                            player.sendMessage("Total monster kills: " + stats.getInt(playerUUID + ".mkills"));
+                        } else if(!key.equals("name")) {
+                            player.sendMessage(key + " kills: " + stats.getInt(playerUUID + "." + key + "." + "mkills"));
+                        }
+                    });
+                }
+            }
+            return true;
+        } else {
+            sender.sendMessage("This command is only available to players.");
+            return true;
+        }
     }
 
     @EventHandler
@@ -71,7 +97,6 @@ public class main extends JavaPlugin implements Listener{
                 killer.sendMessage(msg);
             }
         }
-
     }
 
     @EventHandler
