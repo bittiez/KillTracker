@@ -21,6 +21,8 @@ import java.io.File;
 import java.io.IOException;
 import java.util.logging.Logger;
 
+import static US.bittiez.KillTracker.STATIC.*;
+
 public class main extends JavaPlugin implements Listener{
     private static Logger log;
     private FileConfiguration stats;
@@ -46,10 +48,10 @@ public class main extends JavaPlugin implements Listener{
             if(args[0].equalsIgnoreCase("stats")){
                 if(stats.contains(playerUUID)) {
                     stats.getConfigurationSection(playerUUID).getKeys(false).forEach(key -> {
-                        if(key.equals("mkills")) {
-                            player.sendMessage("Total monster kills: " + stats.getInt(playerUUID + ".mkills"));
+                        if(key.equals(MONSTER_KILLS)) {
+                            player.sendMessage("Total monster kills: " + stats.getInt(COMBINE_PATH(playerUUID, MONSTER_KILLS)));
                         } else if(!key.equals("name")) {
-                            player.sendMessage(key + " kills: " + stats.getInt(playerUUID + "." + key + "." + "mkills"));
+                            player.sendMessage(key + " kills: " + stats.getInt(COMBINE_PATH(playerUUID, key, MONSTER_KILLS)));
                         }
                     });
                 }
@@ -73,20 +75,21 @@ public class main extends JavaPlugin implements Listener{
             Entity ekiller = nEvent.getDamager();
             if (ekiller instanceof Player && !(e.getEntity() instanceof Player)) {
                 Player killer = (Player) ekiller;
-                if (stats.contains(killer.getUniqueId().toString() + ".mkills")) {
-                    int kills = stats.getInt(killer.getUniqueId().toString() + ".mkills");
-                    stats.set(killer.getUniqueId().toString() + ".mkills", kills + 1);
+                String killerUUID = killer.getUniqueId().toString();
+                if (stats.contains(COMBINE_PATH(killerUUID, MONSTER_KILLS))) {
+                    int kills = stats.getInt(COMBINE_PATH(killerUUID, MONSTER_KILLS));
+                    stats.set(COMBINE_PATH(killerUUID, MONSTER_KILLS), kills + 1);
                 } else {
-                    stats.set(killer.getUniqueId().toString() + ".mkills", 1);
-                    stats.set(killer.getUniqueId().toString() + ".name", killer.getDisplayName());
+                    stats.set(COMBINE_PATH(killerUUID, MONSTER_KILLS), 1);
+                    stats.set(COMBINE_PATH(killerUUID, PLAYER_NAME), killer.getDisplayName());
                 }
-
-                if (stats.contains(killer.getUniqueId().toString() + "." + e.getEntity().getName() + ".mkills")) {
-                    int kills = stats.getInt(killer.getUniqueId().toString() + "." + e.getEntity().getName() + ".mkills");
-                    stats.set(killer.getUniqueId().toString() + "." + e.getEntity().getName() + ".mkills", kills + 1);
+                String entityName = e.getEntity().getName();
+                if (stats.contains(COMBINE_PATH(killerUUID, entityName, MONSTER_KILLS))) {
+                    int kills = stats.getInt(COMBINE_PATH(killerUUID, entityName, MONSTER_KILLS));
+                    stats.set(COMBINE_PATH(killerUUID, entityName, MONSTER_KILLS), kills + 1);
                 } else {
-                    stats.set(killer.getUniqueId().toString() + "." + e.getEntity().getName() + ".mkills", 1);
-                    stats.set(killer.getUniqueId().toString() + ".name", killer.getDisplayName());
+                    stats.set(COMBINE_PATH(killerUUID, entityName, MONSTER_KILLS), 1);
+                    stats.set(COMBINE_PATH(killerUUID, PLAYER_NAME), killer.getDisplayName());
                 }
 
                 String msg = config.config.getString("mob_kill");
@@ -111,12 +114,13 @@ public class main extends JavaPlugin implements Listener{
     }
 
     private void rewardKiller(Player killer){
-        if(stats.contains(killer.getUniqueId().toString() + ".kills")){
-            int kills = stats.getInt(killer.getUniqueId().toString() + ".kills");
-            stats.set(killer.getUniqueId().toString() + ".kills", kills + 1);
+        String killerUUID = killer.getUniqueId().toString();
+        if(stats.contains(COMBINE_PATH(killerUUID, PLAYER_KILLS))){
+            int kills = stats.getInt(COMBINE_PATH(killerUUID, PLAYER_KILLS));
+            stats.set(COMBINE_PATH(killerUUID, PLAYER_KILLS), kills + 1);
         } else {
-            stats.set(killer.getUniqueId().toString() + ".kills", 1);
-            stats.set(killer.getUniqueId().toString() + ".name", killer.getDisplayName());
+            stats.set(COMBINE_PATH(killerUUID, PLAYER_KILLS), 1);
+            stats.set(COMBINE_PATH(killerUUID, PLAYER_NAME), killer.getDisplayName());
         }
         String msg = config.config.getString("player_kill");
         msg = msg.replace("[KILLS]", stats.getInt(killer.getUniqueId() + ".kills") + "")
@@ -126,12 +130,13 @@ public class main extends JavaPlugin implements Listener{
     }
 
     private void punishVictim(Player victim){
-        if(stats.contains(victim.getUniqueId().toString() + ".deaths")){
-            int deaths = stats.getInt(victim.getUniqueId().toString() + ".deaths");
-            stats.set(victim.getUniqueId().toString() + ".deaths", deaths + 1);
+        String victimUUID = victim.getUniqueId().toString();
+        if(stats.contains(COMBINE_PATH(victimUUID, PLAYER_DEATHS))){
+            int deaths = stats.getInt(COMBINE_PATH(victimUUID, PLAYER_DEATHS));
+            stats.set(COMBINE_PATH(victimUUID, PLAYER_DEATHS), deaths + 1);
         } else {
-            stats.set(victim.getUniqueId().toString() + ".deaths", 1);
-            stats.set(victim.getUniqueId().toString() + ".name", victim.getDisplayName());
+            stats.set(COMBINE_PATH(victimUUID, PLAYER_DEATHS), 1);
+            stats.set(COMBINE_PATH(victimUUID, PLAYER_NAME), victim.getDisplayName());
         }
         String msg = config.config.getString("player_death");
         msg = msg.replace("[KILLS]", stats.getInt(victim.getUniqueId() + ".kills") + "")
